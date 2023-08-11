@@ -6,7 +6,6 @@ import { genMockData } from './mockGenerator/generator.js'
 
 const app = express();
 
-app.use(express.json());
 app.use(cors({
     origin: 'https://itransition-task5-front.vercel.app'
 }));
