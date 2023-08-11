@@ -8,14 +8,15 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({
-    origin: 'https://itransition-task5-front.vercel.app/',
-    methods: ['PUT', 'GET', 'DELETE', 'POST']
+    origin: 'https://itransition-task5-front.vercel.app'
 }));
+app.use(express.json());
 
-app.listen(3301, () => {
-    console.log('Running on port 3301');
+const port = process.env.PORT || 3301
+
+server.listen(port, () => {
+    console.log(`Running on port ${port}`);
 });
-
 
 app.post('/generate', (req, res) => {
     try {
