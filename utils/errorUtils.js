@@ -1,11 +1,14 @@
+import { allFakers } from "@faker-js/faker";
+
 function delWords(text) {
     const randomIndex = Math.floor(Math.random() * text.length);
     return text.slice(0, randomIndex) + text.slice(randomIndex + 1);
 }
 
-function addWords(text) {
+function addWords(text, locale) {
+    const faker = allFakers[locale];
     const randomIndex = Math.floor(Math.random() * text.length);
-    const randomChar = String.fromCharCode(Math.floor(Math.random() * 26) + 97);
+    const randomChar = faker.string.alpha();
     return text.slice(0, randomIndex) + randomChar + text.slice(randomIndex);
 }
 
@@ -20,41 +23,45 @@ function swapWords(text) {
     return chars.join('');
 }
 
-function genRandomError(value, errorRate) {
+function genRandomError(value, errorRate, locale) {
     const errorType = Math.floor(Math.random() * 3);
     let failValue = value;
 
-    if (errorType === 0) {
-        failValue = delWords(failValue);
-    } else if (errorType === 1) {
-        failValue = addWords(failValue);
-    } else {
-        if (failValue && failValue.length >= 2) {
-            failValue = swapWords(failValue);
+    if (Number.isInteger(errorRate) ? Math.random() < errorRate : errorRate > Math.random()) {
+        if (errorType === 0) {
+            failValue = delWords(failValue);
+        } else if (errorType === 1) {
+            failValue = addWords(failValue, locale);
+        } else {
+            if (failValue && failValue.length >= 2) {
+                failValue = swapWords(failValue);
+            }
         }
     }
     return failValue;
 }
 
 
-function genFailAddr(address, errorRate) {
+
+
+function genFailAddr(address, errorRate, locale) {
     const failAddress = {};
 
     if (address.state) {
-        failAddress.state = genRandomError(address.state, errorRate);
+        failAddress.state = genRandomError(address.state, errorRate, locale);
     }
     if (address.city) {
-        failAddress.city = genRandomError(address.city, errorRate);
+        failAddress.city = genRandomError(address.city, errorRate, locale);
     }
     if (address.street) {
-        failAddress.street = genRandomError(address.street, errorRate);
+        failAddress.street = genRandomError(address.street, errorRate, locale);
     }
 
     return failAddress;
 }
 
 
-export function genFailProd(originalProducts, totalErrors, errorRate) {
+export function genFailProd(originalProducts, totalErrors, errorRate, locale) {
 
     const failProducts = originalProducts.map(product => {
         const fields = ['fullName', 'address', 'uid', 'phone'];
@@ -68,15 +75,16 @@ export function genFailProd(originalProducts, totalErrors, errorRate) {
             const field = fields[idx];
 
             if (field === 'fullName') {
-                failFullName = genRandomError(failFullName, errorRate);
+                failFullName = genRandomError(failFullName, errorRate, locale);
             } else if (field === 'address') {
-                failAddress = genFailAddr(failAddress, errorRate);
+                failAddress = genFailAddr(failAddress, errorRate, locale);
             } else if (field === 'uid') {
-                failUid = genRandomError(failUid, errorRate);
+                failUid = genRandomError(failUid, errorRate, locale);
             } else if (field === 'phone') {
-                failPhone = genRandomError(failPhone, errorRate);
+                failPhone = genRandomError(failPhone, errorRate, locale);
             }
         }
+
 
         return {
             ...product,
