@@ -13,7 +13,7 @@ app.use(express.json());
 
 const port = process.env.PORT || 3301
 
-server.listen(port, () => {
+app.listen(port, () => {
     console.log(`Running on port ${port}`);
 });
 
