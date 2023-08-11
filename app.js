@@ -7,7 +7,10 @@ import { genMockData } from './mockGenerator/generator.js'
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: 'https://itransition-task5-front.vercel.app',
+    methods: ['PUT', 'GET', 'DELETE', 'POST']
+}));
 
 app.listen(3301, () => {
     console.log('Running on port 3301');
