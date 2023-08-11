@@ -8,7 +8,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({
-    origin: 'https://itransition-task5-front.vercel.app',
+    origin: 'https://itransition-task5-front.vercel.app/',
     methods: ['PUT', 'GET', 'DELETE', 'POST']
 }));
 
