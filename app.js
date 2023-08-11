@@ -6,31 +6,29 @@ import { genMockData } from './mockGenerator/generator.js'
 
 const app = express();
 
-app.use(cors({
-    origin: 'https://itransition-task5-front.vercel.app'
-}));
 app.use(express.json());
+app.use(cors());
 
-const port = process.env.PORT || 3301
-
-app.listen(port, () => {
-    console.log(`Running on port ${port}`);
+app.listen(3301, () => {
+    console.log('Running on port 3301');
 });
+
 
 app.post('/generate', (req, res) => {
     try {
 
         const STANDART_PAGE = 20
-
-        const faker = allFakers[req.body.locale.str];
+        const locale = req.body.locale.str
+        const faker = allFakers[locale];
         faker.seed(req.body.iseed, 10);
 
         const totalErrors = req.body.failCount;
-        const errorRate = 0;
+        const errorRate = 0.5
         const failProducts = genFailProd(
             genMockData(faker, req.body.locale, STANDART_PAGE),
             totalErrors,
-            errorRate
+            errorRate,
+            locale
         );
 
         res.status(200).json(failProducts);
@@ -46,7 +44,8 @@ app.post('/getMore', (req, res) => {
         const STANDART_PAGE = 20
 
 
-        const faker = allFakers[req.body.locale.str];
+        const locale = req.body.locale.str
+        const faker = allFakers[locale];
         faker.seed(req.body.iseed, 10);
         const page = req.body.page;
 
