@@ -1,11 +1,17 @@
 import { allFakers } from "@faker-js/faker";
 
 function delWords(text) {
+    if (text.length === 0) {
+        return text;
+    }
     const randomIndex = Math.floor(Math.random() * text.length);
     return text.slice(0, randomIndex) + text.slice(randomIndex + 1);
 }
 
 function addWords(text, locale) {
+    if (text.length === 0) {
+        return text;
+    }
     const faker = allFakers[locale];
     const randomIndex = Math.floor(Math.random() * text.length);
     const randomChar = faker.string.alpha();
@@ -24,6 +30,9 @@ function swapWords(text) {
 }
 
 function genRandomError(value, errorRate, locale) {
+    if (!value || value.length === 0) {
+        return value;
+    }
     const errorType = Math.floor(Math.random() * 3);
     let failValue = value;
 
@@ -60,15 +69,13 @@ function genFailAddr(address, errorRate, locale) {
     return failAddress;
 }
 
-
 export function genFailProd(originalProducts, totalErrors, errorRate, locale) {
-
     const failProducts = originalProducts.map(product => {
         const fields = ['fullName', 'address', 'uid', 'phone'];
-        let failFullName = product.fullName;
-        let failAddress = product.address;
-        let failUid = product.uid;
-        let failPhone = product.phone;
+        let failFullName = product.fullName || '';
+        let failAddress = product.address || {};
+        let failUid = product.uid || '';
+        let failPhone = product.phone || '';
 
         for (let i = 0; i < totalErrors; i++) {
             const idx = i % fields.length;
@@ -85,7 +92,6 @@ export function genFailProd(originalProducts, totalErrors, errorRate, locale) {
             }
         }
 
-
         return {
             ...product,
             address: failAddress,
@@ -97,4 +103,5 @@ export function genFailProd(originalProducts, totalErrors, errorRate, locale) {
 
     return failProducts;
 }
+
 
